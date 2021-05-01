@@ -17,6 +17,12 @@ const userSchema = new mongoose.Schema({
     type: String,
     minLength: [6, "password must be at 6 carachter long"],
   },
+
+  role: {
+    type: String,
+    enum: ["user", "admin"],
+    default: "user",
+  },
 });
 
 userSchema.pre("save", async function () {
@@ -29,6 +35,10 @@ userSchema.methods.signJwtToken = function () {
   return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
     expiresIn: "10 days",
   });
+};
+
+userSchema.methods.comparePassword = async function (enteredPassword) {
+  return await bcrypt.compare(enteredPassword, this.password);
 };
 
 module.exports = mongoose.model("user", userSchema);
