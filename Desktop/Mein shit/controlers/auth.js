@@ -1,5 +1,8 @@
 const User = require("../models/User");
 
+//@register user
+//@ public
+//@ auth/register
 exports.register = async (req, res) => {
   const { email, password } = req.body;
 
@@ -30,6 +33,10 @@ exports.register = async (req, res) => {
   }
 };
 
+//@get all users
+//@ public
+//@ auth/users
+
 exports.getUsers = async (req, res) => {
   try {
     const users = await User.find();
@@ -40,9 +47,12 @@ exports.getUsers = async (req, res) => {
     res.status(200).json({ users, succsess: true });
   } catch (error) {
     res.status(500).json([{ error: error.message }]);
-    console.log(error);
   }
 };
+
+//@login user
+//@ public
+//@ auth/login
 
 exports.login = async (req, res) => {
   const { email, password } = req.body;
@@ -69,8 +79,11 @@ exports.login = async (req, res) => {
   }
 };
 
+//@get single user
+//@ private
+//@ auth/users/me
+
 exports.getUser = async (req, res) => {
-  console.log(req.user);
   try {
     const user = await User.findById({ _id: req.user._id }).select("-password");
 
@@ -84,3 +97,39 @@ exports.getUser = async (req, res) => {
     res.status(500).json([{ msg: error.message }]);
   }
 };
+
+//@update user
+//@ private
+//@ auth/users/update/:id
+
+exports.updateUser = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    if (req.params.id !== req.user._id.toString()) {
+      return res
+        .status(401)
+        .json([{ msg: "user unauthorized to commit this action" }]);
+    }
+
+    const updateUser = await User.findByIdAndUpdate(
+      { _id: req.params.id },
+      { email, password },
+      { runValidators: true, new: true }
+    );
+
+    if (!updateUser) {
+      return res
+        .status(500)
+        .json([{ msg: "something happened while updating the user" }]);
+    }
+
+    await updateUser.save();
+
+    res.status(200).json({ data: updateUser, success: true });
+  } catch (error) {
+    res.status(500).json([{ msg: error.message }]);
+  }
+};
+
+//admin
