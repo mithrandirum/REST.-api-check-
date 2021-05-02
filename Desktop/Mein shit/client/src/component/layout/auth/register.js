@@ -7,9 +7,11 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setAlert } from "./../../../redux/actions/alertActions";
 import { register } from "../../../redux/actions/authActions";
+import Spinner from "react-bootstrap/Spinner";
 
 const Login = () => {
   const alertState = useSelector((state) => state.alertReducer);
+  const authReducer = useSelector((state) => state.authReducer);
   const dispatch = useDispatch();
 
   const state = {
@@ -18,11 +20,7 @@ const Login = () => {
     password: "",
   };
 
-  const [formData, setFormData] = useState({
-    psuedo: "",
-    email: "",
-    password: "",
-  });
+  const [formData, setFormData] = useState(state);
 
   const { psuedo, password, email } = formData;
 
@@ -37,22 +35,9 @@ const Login = () => {
     e.preventDefault();
 
     dispatch(register(formData));
-    // const newUser = {
-    //   psuedo,
-    //   email,
-    //   password,
-    // };
-
-    // try {
-    //   const res = await api.post("/auth/register", newUser);
-    //   console.log(res.data);
-    // } catch (error) {
-    //   console.error(error.response.data);
-    // }
   };
 
-  const error = true;
-  return (
+  const component = (
     <Container>
       <h1 className='mt-4'>Register an Account</h1>
       {alertState.length > 0 &&
@@ -108,6 +93,16 @@ const Login = () => {
       </Form>
     </Container>
   );
+
+  const spin = (
+    <div className='center'>
+      <Container>
+        <Spinner animation='border' className='lg' />
+      </Container>
+    </div>
+  );
+
+  return <>{authReducer.loading ? spin : component}</>;
 };
 
 export default Login;

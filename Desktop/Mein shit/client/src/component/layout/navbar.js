@@ -1,6 +1,7 @@
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 const NavbarNav = () => {
   const authState = useSelector((state) => state.authReducer);
@@ -14,8 +15,12 @@ const NavbarNav = () => {
 
   const authLinks = (
     <Nav className='mr-auto'>
-      <Nav.Link href='/members'>Members</Nav.Link>
-      <Nav.Link href='/posts'>Posts</Nav.Link>
+      <Nav.Link as={Link} to='/members'>
+        Members
+      </Nav.Link>
+      <Nav.Link as={Link} to='/posts'>
+        Posts
+      </Nav.Link>
       <Nav.Link href='!#'>Logout</Nav.Link>
     </Nav>
   );
