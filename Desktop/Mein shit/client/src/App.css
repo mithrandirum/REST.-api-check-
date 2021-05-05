@@ -91,3 +91,83 @@ body {
   top: 50%;
   margin-top: -50px;
 }
+
+.card {
+  background-color: #f4f3f3;
+
+  /* width: 350px;                               
+  /* height: 450px; */
+  width: 100vh;
+  height: 40vh;
+
+  text-align: center;
+  margin: 10%;
+  border-radius: 15px;
+  margin-top: 30px;
+  border: none;
+}
+
+.card-background {
+  background: linear-gradient(to right, #009688, #4caf50);
+  height: 160px;
+  width: 100%;
+  /* border-top-left-radius: 8px;
+  border-top-right-radius: 8px; */
+  border: none;
+}
+
+.card-image {
+  border-radius: 50%;
+  width: 120px;
+  height: auto;
+  position: relative;
+  top: 100px;
+  border: 6px solid #f4f3f3;
+  border: none;
+}
+
+.card-info {
+  margin-top: 80px;
+  padding: 10px;
+}
+
+.fab {
+  color: grey;
+  font-size: 24px;
+  margin: 15px;
+  cursor: pointer;
+}
+
+.fab:hover {
+  color: #524b4b;
+}
+
+h1 {
+  color: #009688;
+}
+
+p {
+  color: grey;
+}
+
+/* 
+ptofle container  */
+
+.profile-container {
+  height: 100vh;
+}
+
+.welcome {
+  margin-left: 30px;
+  margin-top: 30px;
+}
+
+.form-width {
+  width: 60vh;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+}
+/* 
+.west {
+} */

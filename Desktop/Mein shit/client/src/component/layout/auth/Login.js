@@ -8,9 +8,11 @@ import { useState } from "react";
 import { login } from "../../../redux/actions/authActions";
 import { useDispatch, useSelector } from "react-redux";
 import Spinner from "react-bootstrap/Spinner";
+import { Redirect } from "react-router-dom";
 
-const Login = () => {
+const Login = ({ history }) => {
   const authReducer = useSelector((state) => state.authReducer);
+  const alerReducer = useSelector((state) => state.alertReducer);
   const dispatch = useDispatch();
   const state = {
     email: "",
@@ -26,21 +28,27 @@ const Login = () => {
     //console.log(formData);
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
-    dispatch(login(formData));
+    dispatch(login(formData, history));
+
+    if (authReducer.isAuthenticated) {
+      history.push("/profile");
+    }
   };
 
   const component = (
-    <Container>
-      <h1 className='mt-4'>Login to your Account</h1>
-      {null && (
-        <Alert variant='danger' className='mt-5'>
-          This is a alert—check it out!
-        </Alert>
-      )}
-      <Form className='mt-5' onSubmit={(e) => onSubmit(e)}>
+    <div className='form-width dude'>
+      <h1 className='mt-4 mb-4' style={{ textAlign: "center" }}>
+        Login to your Account
+      </h1>
+      {alerReducer.length > 0 &&
+        alerReducer.map((alert) => (
+          <Alert variant={alert.alertype} className='mt-5'>
+            {alert.msg}
+          </Alert>
+        ))}
+      <Form onSubmit={(e) => onSubmit(e)}>
         <Form.Group controlId='formBasicEmail'>
           <Form.Label>Email address</Form.Label>
           <Form.Control
@@ -79,7 +87,7 @@ const Login = () => {
           don't have an account? <Link to='/register'>register</Link>
         </Form.Text>
       </Form>
-    </Container>
+    </div>
   );
 
   const spinner = (
@@ -89,8 +97,9 @@ const Login = () => {
       </Container>
     </div>
   );
+  const com = <>{authReducer.loading ? spinner : component}</>;
 
-  return <>{authReducer.loading ? spinner : component}</>;
+  return <> {authReducer.isAuthenticated ? <Redirect to='/profile' /> : com}</>;
 };
 
 export default Login;

@@ -4,19 +4,22 @@ const User = require("../models/User");
 //@ public
 //@ auth/register
 exports.register = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, psuedo } = req.body;
 
   try {
+    console.log("hit yes");
+
     const match = await User.findOne({ email });
     if (match) {
       return res
         .status(400)
-        .json([{ msg: "a user with that email already exist" }]);
+        .json({ errors: ["a user with that email already exist"] });
     }
 
     const user = new User({
       email,
       password,
+      psuedo,
     });
 
     const newUser = await user.save();
@@ -24,7 +27,7 @@ exports.register = async (req, res) => {
     const token = newUser.signJwtToken();
     // console.log(newUser.methods.signJwtToken);
 
-    res.json({ newUser, token });
+    res.json({ token });
   } catch (err) {
     if (err.name === "ValidationError") {
       const message = Object.values(err.errors).map((val) => val.message);
@@ -63,6 +66,7 @@ exports.login = async (req, res) => {
 
   try {
     const user = await User.findOne({ email });
+
     if (!user) {
       return res.status(404).json([{ msg: "wrong credentials" }]);
     }
@@ -70,10 +74,11 @@ exports.login = async (req, res) => {
     const ismatch = await user.comparePassword(password);
 
     if (!ismatch) {
-      res.json([{ msg: "wrong credentials" }]);
+      res.status(401).json([{ msg: "wrong credentials" }]);
     }
+    const token = user.signJwtToken();
 
-    res.status(200).json({ user });
+    return res.status(200).json({ token });
   } catch (error) {
     res.status(500).json([{ msg: error.message }]);
   }
@@ -91,7 +96,7 @@ exports.getUser = async (req, res) => {
       return res.status(401).json([{ msg: "unauthorized" }]);
     }
 
-    res.status(200).json([{ data: user, success: true }]);
+    res.status(200).json(user);
   } catch (error) {
     console.error(error);
     res.status(500).json([{ msg: error.message }]);
@@ -106,7 +111,10 @@ exports.updateUser = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    if (req.params.id !== req.user._id.toString()) {
+    if (
+      req.params.id !== req.user._id.toString() &&
+      req.user.role !== "admin"
+    ) {
       return res
         .status(401)
         .json([{ msg: "user unauthorized to commit this action" }]);
@@ -132,4 +140,24 @@ exports.updateUser = async (req, res) => {
   }
 };
 
-//admin
+//delete user
+//@admin auth/users/delete/:id
+//private
+
+exports.deleteUser = async (req, res) => {
+  try {
+    if (req.user.role !== "admin") {
+      res.status(401).json([{ msg: "unauthorized" }]);
+    }
+
+    const removed = await User.findByIdAndDelete({ _id: req.params.id });
+
+    if (!removed) {
+      return res.status(500).json([{ msg: "server erorr" }]);
+    }
+
+    return res.status(200).json([{ data: {}, succsess: true }]);
+  } catch (error) {
+    res.status(500).json([{ msg: "server error" }]);
+  }
+};

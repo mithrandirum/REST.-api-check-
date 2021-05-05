@@ -8,6 +8,7 @@ const {
   login,
   getUser,
   updateUser,
+  deleteUser,
 } = require("../controlers/auth");
 
 router.route("/register").post(register);
@@ -15,4 +16,5 @@ router.route("/users").get(getUsers);
 router.route("/login").post(login);
 router.route("/users/me").get(auth, getUser);
 router.route("/users/update/:id").put(auth, updateUser);
+router.route("/users/delete/:id").delete(auth, deleteUser);
 module.exports = router;

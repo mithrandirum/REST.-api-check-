@@ -3,6 +3,11 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const userSchema = new mongoose.Schema({
+  psuedo: {
+    type: String,
+    unique: [true, "this psuedo is aleady taken"],
+  },
+
   email: {
     type: String,
     trim: true,

@@ -9,7 +9,7 @@ import { setAlert } from "./../../../redux/actions/alertActions";
 import { register } from "../../../redux/actions/authActions";
 import Spinner from "react-bootstrap/Spinner";
 
-const Login = () => {
+const Login = ({ history }) => {
   const alertState = useSelector((state) => state.alertReducer);
   const authReducer = useSelector((state) => state.authReducer);
   const dispatch = useDispatch();
@@ -30,16 +30,23 @@ const Login = () => {
 
   const onSubmit = (e) => {
     if (!psuedo || !email || !password) {
-      dispatch(setAlert("please fill all the fields dawg", "danger"));
+      dispatch(setAlert("please fill all the fields", "danger"));
     }
     e.preventDefault();
 
-    dispatch(register(formData));
+    dispatch(register(formData, history));
+
+    authReducer.isAuthenticated &&
+      dispatch(setAlert("please fill all the fields", "success"));
+
+    authReducer.isAuthenticated && setFormData(state);
   };
 
   const component = (
     <Container>
-      <h1 className='mt-4'>Register an Account</h1>
+      <h1 className='mt-4' style={{ textAlign: "center" }}>
+        Register an Account
+      </h1>
       {alertState.length > 0 &&
         alertState.map((alert, index) => (
           <Alert key={index} variant={alert.alertype} className='mt-5'>
@@ -84,7 +91,7 @@ const Login = () => {
             password must be at least 6 carachter long
           </Form.Text>
         </Form.Group>
-        <Button variant='dark' type='submit' size='lg'>
+        <Button variant='primary' type='submit' size='lg'>
           Register
         </Button>
         <Form.Text className='text-muted'>
@@ -102,7 +109,11 @@ const Login = () => {
     </div>
   );
 
-  return <>{authReducer.loading ? spin : component}</>;
+  return (
+    <div className='form-width dude'>
+      {authReducer.loading ? spin : component}
+    </div>
+  );
 };
 
 export default Login;

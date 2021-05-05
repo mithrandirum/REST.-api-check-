@@ -1,15 +1,21 @@
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import { logout } from "../../redux/actions/authActions";
 
-const NavbarNav = () => {
+const NavbarNav = ({ history }) => {
   const authState = useSelector((state) => state.authReducer);
+  const dispatch = useDispatch();
 
   const questLink = (
     <Nav className='mr-auto'>
-      <Nav.Link href='/register'>Register</Nav.Link>
-      <Nav.Link href='/login'>Login</Nav.Link>
+      <Nav.Link as={Link} to='/register'>
+        Register
+      </Nav.Link>
+      <Nav.Link as={Link} to='/login'>
+        Login
+      </Nav.Link>
     </Nav>
   );
 
@@ -21,7 +27,9 @@ const NavbarNav = () => {
       <Nav.Link as={Link} to='/posts'>
         Posts
       </Nav.Link>
-      <Nav.Link href='!#'>Logout</Nav.Link>
+      <Nav.Link as={Link} to='/' onClick={() => dispatch(logout(history))}>
+        Logout
+      </Nav.Link>
     </Nav>
   );
 

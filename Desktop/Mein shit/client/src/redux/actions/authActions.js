@@ -7,26 +7,39 @@ import {
   AUTH_ERROR,
   LOGIN_SUCCESS,
   LOGIN_FAIL,
+  LOGOUT_SUCCESS,
+  LOGOUT_FAIL,
 } from "./types";
 import { setToken } from "../../utils/setAuthToken";
+import store from "../../store";
+import axios from "axios";
 
 //register user
-export const register = (formData) => async (dispatch) => {
+export const register = (formData, history) => async (dispatch) => {
   try {
-    const res = await api.post("/auth/register", formData);
+    const config = {
+      "Content-Type": "application/json",
+    };
+
+    const res = await axios.post(
+      "http://localhost:5000/auth/register",
+      formData,
+      config
+    );
 
     dispatch({
       type: REGISTER_SUCCESS,
       payload: res.data,
     });
     dispatch(loadUser());
+
+    history.push("/profile");
   } catch (err) {
     dispatch({
       type: REGISTER_FAIL,
     });
 
     const errors = err.response.data.errors;
-
     if (errors) {
       errors.forEach((error) => {
         dispatch(setAlert(error, "danger"));
@@ -37,25 +50,34 @@ export const register = (formData) => async (dispatch) => {
 
 //log in user
 
-export const login = (formData) => async (dispatch) => {
+export const login = (formData, history) => async (dispatch) => {
+  const config = { "Content-Type": "application/json" };
+
   try {
-    const res = await api.post("/auth/login", formData);
+    const res = await axios.post(
+      "http://localhost:5000/auth/login",
+      formData,
+      config
+    );
 
     dispatch({
       type: LOGIN_SUCCESS,
       payload: res.data,
     });
+    //history.push("/profile");
+
     dispatch(loadUser());
   } catch (err) {
+    console.log(err);
     dispatch({
       type: LOGIN_FAIL,
     });
 
-    const errors = err.response.data.errors;
-
-    if (errors) {
+    const errors = err.response.data;
+    console.log(errors);
+    if (errors.length > 0) {
       errors.forEach((error) => {
-        dispatch(setAlert(error, "danger"));
+        dispatch(setAlert(error.msg, "danger"));
       });
     }
   }
@@ -67,8 +89,8 @@ export const loadUser = () => async (dispatch) => {
     setToken(localStorage.token);
   }
   try {
-    const res = await api.get("/auth/users/me");
-
+    const res = await axios.get("http://localhost:5000/auth/users/me");
+    console.log(res);
     dispatch({
       type: USER_LOADED,
       payload: res.data,
@@ -76,6 +98,20 @@ export const loadUser = () => async (dispatch) => {
   } catch (err) {
     dispatch({
       type: AUTH_ERROR,
+    });
+  }
+};
+
+export const logout = (history) => async (dispatch) => {
+  dispatch({
+    type: LOGOUT_SUCCESS,
+  });
+  history.push("/");
+
+  const state = store.getState();
+  if (state.authReducer.user !== null) {
+    dispatch({
+      LOGOUT_FAIL,
     });
   }
 };
