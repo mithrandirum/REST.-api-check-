@@ -39,7 +39,7 @@ const Login = ({ history }) => {
     authReducer.isAuthenticated &&
       dispatch(setAlert("please fill all the fields", "success"));
 
-    authReducer.isAuthenticated && setFormData(state);
+    setFormData(state);
   };
 
   const component = (

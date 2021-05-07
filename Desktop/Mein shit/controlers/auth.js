@@ -6,14 +6,21 @@ const User = require("../models/User");
 exports.register = async (req, res) => {
   const { email, password, psuedo } = req.body;
 
+  const result = validateEmail(email);
+  console.log(result);
+
   try {
-    console.log("hit yes");
+    if (!result) {
+      return res.status(400).send("please fill a valid email");
+    }
+
+    if (password.length < 6) {
+      return res.status(400).send("min length 6");
+    }
 
     const match = await User.findOne({ email });
     if (match) {
-      return res
-        .status(400)
-        .json({ errors: ["a user with that email already exist"] });
+      return res.status(400).send("a user with that email already exist");
     }
 
     const user = new User({
@@ -25,14 +32,10 @@ exports.register = async (req, res) => {
     const newUser = await user.save();
 
     const token = newUser.signJwtToken();
-    // console.log(newUser.methods.signJwtToken);
 
     res.json({ token });
   } catch (err) {
-    if (err.name === "ValidationError") {
-      const message = Object.values(err.errors).map((val) => val.message);
-      return res.status(400).json({ errors: message });
-    }
+    err.status(500).send("server error");
   }
 };
 
@@ -60,27 +63,30 @@ exports.getUsers = async (req, res) => {
 exports.login = async (req, res) => {
   const { email, password } = req.body;
 
-  if (!email || !password) {
-    res.status(400).json([{ msg: "please fill out all fields" }]);
-  }
+  const result = validateEmail(email);
+
+  if (!result) return res.status(400).send("please enter a valid email");
+
+  if (password.length < 6)
+    return res.status(400).send("password minlength is 6");
 
   try {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(404).json([{ msg: "wrong credentials" }]);
+      return res.status(404).send("user not found");
     }
 
     const ismatch = await user.comparePassword(password);
 
     if (!ismatch) {
-      res.status(401).json([{ msg: "wrong credentials" }]);
+      return res.status(401).send("wrong credentials");
     }
     const token = user.signJwtToken();
 
     return res.status(200).json({ token });
   } catch (error) {
-    res.status(500).json([{ msg: error.message }]);
+    res.status(500).send("server error");
   }
 };
 
@@ -98,7 +104,6 @@ exports.getUser = async (req, res) => {
 
     res.status(200).json(user);
   } catch (error) {
-    console.error(error);
     res.status(500).json([{ msg: error.message }]);
   }
 };
@@ -108,7 +113,9 @@ exports.getUser = async (req, res) => {
 //@ auth/users/update/:id
 
 exports.updateUser = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, psuedo } = req.body;
+
+  console.log(req);
 
   try {
     if (
@@ -122,7 +129,7 @@ exports.updateUser = async (req, res) => {
 
     const updateUser = await User.findByIdAndUpdate(
       { _id: req.params.id },
-      { email, password },
+      { email, password, psuedo },
       { runValidators: true, new: true }
     );
 
@@ -132,9 +139,11 @@ exports.updateUser = async (req, res) => {
         .json([{ msg: "something happened while updating the user" }]);
     }
 
-    await updateUser.save();
+    const user = await updateUser.save();
 
-    res.status(200).json({ data: updateUser, success: true });
+    const token = user.signJwtToken();
+
+    res.status(200).json({ user, token });
   } catch (error) {
     res.status(500).json([{ msg: error.message }]);
   }
@@ -161,3 +170,9 @@ exports.deleteUser = async (req, res) => {
     res.status(500).json([{ msg: "server error" }]);
   }
 };
+
+//validate email
+function validateEmail(email) {
+  const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return re.test(email);
+}

@@ -7,11 +7,14 @@ import Login from "./component/layout/auth/Login";
 import Register from "./component/layout/auth/register";
 import React, { useEffect } from "react";
 import { loadUser } from "./redux/actions/authActions";
+import { getProfile } from "./redux/actions/profileActions";
 import { useDispatch } from "react-redux";
 import { setToken } from "./utils/setAuthToken";
 import Profile from "./component/profile/Profile";
 import { PrivateRoute } from "./component/routing/privateRoute";
 import { ProfileForm } from "./component/profile/create-profile-form";
+//import { CreateAccount } from "./component/profile/create-account";
+//import { EditProfile } from "./component/profile/edit-profile";
 
 if (localStorage.token) {
   setToken(localStorage.token);
@@ -31,8 +34,10 @@ const App = () => {
       <Switch>
         <Route path='/login' component={Login} />
         <Route path='/register' component={Register} />
-        <Route path='/create-profile' component={ProfileForm} />
+        <PrivateRoute path='/create-profile' component={ProfileForm} />
         <PrivateRoute path='/profile' component={Profile} />
+
+        {/* <PrivateRoute path='/edit-profile/:userId' component={EditProfile} /> */}
       </Switch>
 
       {/* <Container></Container> */}

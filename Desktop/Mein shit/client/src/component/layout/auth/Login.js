@@ -9,6 +9,8 @@ import { login } from "../../../redux/actions/authActions";
 import { useDispatch, useSelector } from "react-redux";
 import Spinner from "react-bootstrap/Spinner";
 import { Redirect } from "react-router-dom";
+import { setAlert } from "../../../redux/actions/alertActions";
+import { getProfile } from "../../../redux/actions/profileActions";
 
 const Login = ({ history }) => {
   const authReducer = useSelector((state) => state.authReducer);
@@ -30,11 +32,11 @@ const Login = ({ history }) => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    dispatch(login(formData, history));
-
-    if (authReducer.isAuthenticated) {
-      history.push("/profile");
+    if (!email || !password) {
+      dispatch(setAlert("please fill all fields", "danger"));
     }
+
+    dispatch(login(formData, history));
   };
 
   const component = (
@@ -97,9 +99,12 @@ const Login = ({ history }) => {
       </Container>
     </div>
   );
-  const com = <>{authReducer.loading ? spinner : component}</>;
 
-  return <> {authReducer.isAuthenticated ? <Redirect to='/profile' /> : com}</>;
+  if (authReducer.isAuthenticated) {
+    <Redirect to='/profile' />;
+  }
+
+  return <>{component}</>;
 };
 
 export default Login;

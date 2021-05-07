@@ -13,7 +13,9 @@ exports.uploadImage = async (req, res) => {
       return res.status(400).json({ errors: ["please upload an image file"] });
     }
     const file = req.files.file;
+    console.log(req);
 
+    console.log("image route is hit");
     // Create custom filename
     file.name = `photo_${req.user._id}${path.parse(file.name).ext}`;
 
@@ -33,9 +35,9 @@ exports.uploadImage = async (req, res) => {
         { image: file.name }
       );
 
+      await updated.save();
+
       res.status(200).json({
-        success: true,
-        data: file.name,
         updated,
       });
     });
@@ -123,4 +125,75 @@ exports.getProfiles = async (req, res) => {
   }
 };
 
-//update a profile by id
+//profile/me
+// get current user profile once loged in
+
+exports.getUserProfile = async (req, res) => {
+  const profile = await Profile.findOne({ user: req.user.id }).populate({
+    path: "user",
+    select: "psuedo",
+  });
+
+  if (!profile) {
+    return res.status(404).json({ errors: ["profile not found"] });
+  }
+
+  console.log(profile);
+  res.status(200).json(profile);
+};
+
+//edit profile
+
+exports.updateProfile = async (req, res) => {
+  const { description, facebook, instagram, youtube, psuedo } = req.body;
+
+  const social = {
+    facebook,
+    instagram,
+    youtube,
+  };
+
+  // normalize social fields to ensure valid url
+  for (const [key, value] of Object.entries(social)) {
+    if (value && value.length > 0)
+      social[key] = normalize(value, { forceHttps: true });
+  }
+
+  try {
+    const pro = await Profile.findOne({ user: req.user.id });
+
+    if (!pro)
+      return res
+        .status(404)
+        .json({ errors: ["user doesn nt have a profile yet profile"] });
+
+    const obj = {
+      description,
+      psuedo,
+      social: {
+        facebook,
+        instagram,
+        youtube,
+      },
+    };
+
+    const updatedProfile = await Profile.findOneAndUpdate(
+      { user: pro.user },
+      obj,
+      { new: true }
+    );
+
+    if (!updatedProfile) {
+      return res
+        .status(500)
+        .json({ errors: ["server failed updating the document"] });
+    }
+
+    await updatedProfile.save();
+
+    res.json(updatedProfile);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ errors: ["server error"] });
+  }
+};

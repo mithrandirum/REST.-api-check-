@@ -1,4 +1,3 @@
-import api from "./api";
 import axios from "axios";
 
 export const setToken = (token) => {
@@ -7,6 +6,6 @@ export const setToken = (token) => {
 
     //req.headers.authorization.startsWith("Bearer")
   } else {
-    delete api.headers.authorization.token;
+    delete axios.headers.authorization.token;
   }
 };

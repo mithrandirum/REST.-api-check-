@@ -1,18 +1,21 @@
-import api from "../../utils/api";
 import { setAlert } from "./alertActions";
 import {
+  USER_LOADED,
   REGISTER_SUCCESS,
   REGISTER_FAIL,
-  USER_LOADED,
   AUTH_ERROR,
   LOGIN_SUCCESS,
   LOGIN_FAIL,
   LOGOUT_SUCCESS,
   LOGOUT_FAIL,
+  Empty_PROFILE,
+  USER_UPDATE_SUCCESS,
+  // USER_UPDATE_FAILED,
 } from "./types";
 import { setToken } from "../../utils/setAuthToken";
 import store from "../../store";
 import axios from "axios";
+import { getProfile } from "./profileActions";
 
 //register user
 export const register = (formData, history) => async (dispatch) => {
@@ -33,18 +36,16 @@ export const register = (formData, history) => async (dispatch) => {
     });
     dispatch(loadUser());
 
-    history.push("/profile");
+    history.push("/create-profile");
   } catch (err) {
     dispatch({
       type: REGISTER_FAIL,
     });
 
-    const errors = err.response.data.errors;
-    if (errors) {
-      errors.forEach((error) => {
-        dispatch(setAlert(error, "danger"));
-      });
-    }
+    console.log(err);
+    console.log(err.response.data);
+
+    dispatch(setAlert(err.response.data, "danger"));
   }
 };
 
@@ -60,26 +61,28 @@ export const login = (formData, history) => async (dispatch) => {
       config
     );
 
-    dispatch({
-      type: LOGIN_SUCCESS,
-      payload: res.data,
-    });
-    //history.push("/profile");
+    if (res.data) {
+      dispatch({
+        type: LOGIN_SUCCESS,
+        payload: res.data,
+      });
 
-    dispatch(loadUser());
+      dispatch(getProfile());
+
+      dispatch(setAlert("successfully login attemps", "success"));
+
+      setTimeout(() => history.push("/profile"), 2000);
+    }
   } catch (err) {
-    console.log(err);
     dispatch({
       type: LOGIN_FAIL,
     });
 
-    const errors = err.response.data;
-    console.log(errors);
-    if (errors.length > 0) {
-      errors.forEach((error) => {
-        dispatch(setAlert(error.msg, "danger"));
-      });
-    }
+    dispatch(setAlert(err.response.data, "danger"));
+
+    // console.log(error.response.data);
+    // console.log(error.response.status);
+    // console.log(error.response.headers);
   }
 };
 
@@ -90,7 +93,7 @@ export const loadUser = () => async (dispatch) => {
   }
   try {
     const res = await axios.get("http://localhost:5000/auth/users/me");
-    console.log(res);
+    console.log(res.data);
     dispatch({
       type: USER_LOADED,
       payload: res.data,
@@ -103,15 +106,40 @@ export const loadUser = () => async (dispatch) => {
 };
 
 export const logout = (history) => async (dispatch) => {
+  localStorage.removeItem("token");
   dispatch({
     type: LOGOUT_SUCCESS,
   });
   history.push("/");
+
+  dispatch({
+    type: Empty_PROFILE,
+  });
 
   const state = store.getState();
   if (state.authReducer.user !== null) {
     dispatch({
       LOGOUT_FAIL,
     });
+  }
+};
+
+export const updateUser = (data, userId) => async (dispatch) => {
+  const config = { "Content-Type": "application/json" };
+
+  const res = await axios.put(
+    `http://localhost:5000/auth/users/update/${userId}`,
+    data,
+    config
+  );
+
+  try {
+    dispatch({
+      type: USER_UPDATE_SUCCESS,
+      payload: res.data,
+    });
+  } catch (error) {
+    dispatch(setAlert(error.response.data.errors[0]));
+    console.log(error);
   }
 };

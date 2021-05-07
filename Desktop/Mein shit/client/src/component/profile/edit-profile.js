@@ -1,21 +1,25 @@
-import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import FormControl from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import { Link, Redirect } from "react-router-dom";
+import { Redirect, useParams } from "react-router-dom";
 import Alert from "react-bootstrap/Alert";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import InputGroup from "react-bootstrap/InputGroup";
-import { createProfile, uploadImage } from "../../redux/actions/profileActions";
-import { logout } from "../../redux/actions/authActions";
+// import {
+//   createProfile,
+//   updateProfile,
+// } from "../../redux/actions/profileActions";
+// import { updateUser } from "../../redux/actions/authActions";
 
-export const ProfileForm = ({ history }) => {
+export const EditProfile = ({ history, match }) => {
+  const id = useParams();
+
   const alertSate = useSelector((state) => state.alertReducer);
-  const authState = useSelector((state) => state.authReducer);
-  const profileState = useSelector((state) => state.profileReducer);
+  // const authState = useSelector((state) => state.authReducer);
+  // const profileState = useSelector((state) => state.profileReducer);
 
-  const dispatch = useDispatch();
+  //const dispatch = useDispatch();
   const state = {
     description: "",
     facebook: "",
@@ -24,26 +28,42 @@ export const ProfileForm = ({ history }) => {
   };
 
   const [data, setFormData] = useState(state);
-  const [file, setFile] = useState("");
+  const [edit, setEdit] = useState(false);
+  const [psuedo, setPsuedo] = useState({ psuedo: "" });
+  const [email, setEmail] = useState({ email: "" });
+  const [password, setPassword] = useState({ password: "" });
+  // const [file, setFile] = useState("");
 
   const onChange = (e) => {
     setFormData({ ...data, [e.target.name]: e.target.value });
   };
+
   const { description, instagram, facebook, youtube } = data;
+
+  const userInfo = {
+    psuedo,
+    email,
+    password,
+  };
 
   const onSubmit = (e) => {
     e.preventDefault();
 
-    dispatch(createProfile(data, history));
+    // dispatch(updateProfile(data));
 
-    // console.log(file);
+    // dispatch(updateUser(userInfo, id.userId));
 
-    //dispatch(uploadImage(file));
+    //setTimeout(() => setEdit(!edit), 2000);
+    // console.log(data);
+    console.log(userInfo);
+    console.log(id.userId);
+
+    // dispatch(uploadImage(file));
   };
 
   const compo = (
     <div className='west'>
-      <h1 className='ml-4 mt-4'>create an account</h1>
+      <h1 className='ml-4 mt-4'>Edit your account</h1>
       <div className='form-width'>
         {alertSate.length > 0 &&
           alertSate.map((alert, index) => (
@@ -54,6 +74,40 @@ export const ProfileForm = ({ history }) => {
       </div>
 
       <Form className='form-width' onSubmit={(e) => onSubmit(e)}>
+        <h2 className='mt-4 align'>Update Credentials</h2>
+        <Form.Group>
+          <Form.Label>psuedo...</Form.Label>
+          <Form.Control
+            type='text'
+            placeholder='add psuedo...'
+            name='psuedo'
+            onChange={(e) => setPsuedo(e.target.value)}
+          />
+          <Form.Text className='text-muted'></Form.Text>
+        </Form.Group>
+        <Form.Group>
+          <i className=''></i>
+          <Form.Label>email...</Form.Label>
+          <Form.Control
+            type='emai'
+            placeholder='change email...'
+            name='email'
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <Form.Text className='text-muted'></Form.Text>
+        </Form.Group>
+        <Form.Group>
+          <i className=''></i>
+          <Form.Label>password...</Form.Label>
+          <Form.Control
+            type='password'
+            placeholder='change password...'
+            name='password'
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <Form.Text className='text-muted'></Form.Text>
+        </Form.Group>
+
         <Form.Group>
           <h2 className='mt-4 align'>Add social Links</h2>
           <Form.Group>
@@ -130,9 +184,5 @@ export const ProfileForm = ({ history }) => {
     </div>
   );
 
-  if (authState.isAuthenticated && profileState.profile == !null) {
-    <Redirect to='/profile' />;
-  }
-
-  return <>{compo}</>;
+  return edit ? <Redirect to='/profile' /> : compo;
 };
