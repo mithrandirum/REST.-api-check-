@@ -21,7 +21,7 @@ const NavbarNav = ({ history }) => {
 
   const authLinks = (
     <Nav className='mr-auto'>
-      <Nav.Link as={Link} to='/members'>
+      <Nav.Link as={Link} to='/profiles'>
         Members
       </Nav.Link>
       <Nav.Link as={Link} to='/posts'>

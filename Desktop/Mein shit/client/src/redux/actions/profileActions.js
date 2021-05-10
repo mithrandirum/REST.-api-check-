@@ -9,6 +9,10 @@ import {
   UPDATE_FAIL,
   Empty_PROFILE,
   GET_PROFILE,
+  PROFILE_DELETE_SUCCESS,
+  PROFILE_DELETE_FAILED,
+  GET_PROFILES_SUCCESS,
+  GET_PROFILES_FAIL,
 } from "./types";
 import axios from "axios";
 import { setAlert } from "./alertActions";
@@ -27,11 +31,6 @@ export const createProfile = (profileData, history) => async (dispatch) => {
       config
     );
 
-    // history()
-    // dispatch(loadUser());
-
-    console.log(res);
-
     dispatch({
       type: GET_PROFILE,
       payload: res.data,
@@ -41,12 +40,14 @@ export const createProfile = (profileData, history) => async (dispatch) => {
 
     dispatch(setAlert("Profile Created", "success"));
 
-    //setTimeout(() => history.push("profile"), 2000);
+    setTimeout(() => history.push("/profile"), 2000);
 
-    history.push("profile");
     console.log(res.data);
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    if (err.response.status === 403) {
+      history.push("./profile");
+    }
+    console.log(err);
     dispatch({
       type: PROFILE_ERROR,
     });
@@ -78,18 +79,22 @@ export const uploadImage = (file) => async (dispatch) => {
     "Content-Type": "application/json",
   };
 
+  var bodyFormData = new FormData();
+
+  bodyFormData.append("file", file);
+
   try {
     const res = await axios.post(
-      "http://localhost:5000/profile/image/:profileId",
-      file,
-      config
+      "http://localhost:5000/profile/image",
+      bodyFormData
     );
 
     dispatch({
       type: IMAGE_UPLOADED,
       payload: res.data,
     });
-    dispatch(loadUser());
+
+    setAlert("image uploaded Succesfully", "success");
   } catch (error) {
     dispatch({
       type: UPLOAD_FAILED,
@@ -102,7 +107,7 @@ export const uploadImage = (file) => async (dispatch) => {
 
 //update profile
 
-export const updateProfile = (formData) => async (dispatch) => {
+export const profileUpdate = (formData, history) => async (dispatch) => {
   try {
     const config = {
       "Content-Type": "application/json",
@@ -114,20 +119,64 @@ export const updateProfile = (formData) => async (dispatch) => {
     );
 
     dispatch({
-      type: Empty_PROFILE,
-    });
-
-    dispatch({
       type: UPDATE_SUCCESS,
       payload: res.data,
     });
 
-    dispatch(getProfile());
-  } catch (error) {
-    // dispatch({
-    //   type: UPLOAD_FAILED,
-    // });
-    // if (error.response.data.errors)
-    //   dispatch(setAlert(error.response.data.errors[0]));
+    dispatch(setAlert("profile updated succesfully", "success"));
+
+    setTimeout(() => history.push("profile"), 1000);
+    // dispatch(getProfile());
+  } catch (err) {
+    dispatch({
+      type: UPDATE_FAIL,
+    });
+
+    dispatch(setAlert(err.response.data, "danger"));
+  }
+};
+
+//delete profile by its id
+export const deleteProfile = (profileId, history) => async (dispatch) => {
+  try {
+    const res = await axios.delete(
+      `http://localhost:5000/profile/delete/${profileId}`
+    );
+
+    dispatch({
+      type: PROFILE_DELETE_SUCCESS,
+    });
+
+    dispatch(setAlert("account deleted successfully", "success"));
+
+    setTimeout(history.push("/create-profile"));
+  } catch (err) {
+    dispatch({
+      type: PROFILE_DELETE_FAILED,
+    });
+
+    // dispatch(
+    //   setAlert(
+    //     err.response.data.errors.map((err) => err),
+    //     "danger"
+    //   )
+    // );
+  }
+};
+
+//get profiles
+
+export const getProfiles = () => async (dispatch) => {
+  try {
+    const res = await axios.get(`http://localhost:5000/profile/profiles`);
+
+    dispatch({
+      type: GET_PROFILES_SUCCESS,
+      payload: res.data,
+    });
+  } catch (err) {
+    dispatch({
+      type: GET_PROFILES_FAIL,
+    });
   }
 };

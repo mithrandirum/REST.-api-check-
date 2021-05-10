@@ -10,7 +10,7 @@ import {
   LOGOUT_FAIL,
   Empty_PROFILE,
   USER_UPDATE_SUCCESS,
-  // USER_UPDATE_FAILED,
+  USER_UPDATE_FAILED,
 } from "./types";
 import { setToken } from "../../utils/setAuthToken";
 import store from "../../store";
@@ -54,12 +54,18 @@ export const register = (formData, history) => async (dispatch) => {
 export const login = (formData, history) => async (dispatch) => {
   const config = { "Content-Type": "application/json" };
 
+  // const profileId =
+  //   store.getState().profileReducer.profile._id !== null &&
+  //   store.getState().profileReducer.profile._id;
+  // const profileState = store.getState().profileReducer;
+
   try {
     const res = await axios.post(
       "http://localhost:5000/auth/login",
       formData,
       config
     );
+    dispatch(getProfile());
 
     if (res.data) {
       dispatch({
@@ -67,11 +73,9 @@ export const login = (formData, history) => async (dispatch) => {
         payload: res.data,
       });
 
-      dispatch(getProfile());
-
       dispatch(setAlert("successfully login attemps", "success"));
 
-      setTimeout(() => history.push("/profile"), 2000);
+      setTimeout(() => history.push(`/profile`), 2000);
     }
   } catch (err) {
     dispatch({
@@ -124,11 +128,11 @@ export const logout = (history) => async (dispatch) => {
   }
 };
 
-export const updateUser = (data, userId) => async (dispatch) => {
+export const updateUser = (data, history) => async (dispatch) => {
   const config = { "Content-Type": "application/json" };
 
   const res = await axios.put(
-    `http://localhost:5000/auth/users/update/${userId}`,
+    `http://localhost:5000/auth/users/update`,
     data,
     config
   );
@@ -138,8 +142,15 @@ export const updateUser = (data, userId) => async (dispatch) => {
       type: USER_UPDATE_SUCCESS,
       payload: res.data,
     });
-  } catch (error) {
-    dispatch(setAlert(error.response.data.errors[0]));
-    console.log(error);
+
+    dispatch(setAlert("user credentials updated", "success"));
+
+    setTimeout(() => history.push("/profile"), 1000);
+  } catch (err) {
+    dispatch(setAlert(err.response.data[0], "danger"));
+    console.log(err.response.data);
+    dispatch({
+      USER_UPDATE_FAILED,
+    });
   }
 };

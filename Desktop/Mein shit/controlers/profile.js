@@ -19,26 +19,26 @@ exports.uploadImage = async (req, res) => {
     // Create custom filename
     file.name = `photo_${req.user._id}${path.parse(file.name).ext}`;
 
-    file.mv(`${__dirname}/downloads/image/${file.name}`, async (err) => {
+    file.mv(`${__dirname}/../client/public/image/${file.name}`, async (err) => {
       if (err) {
         console.error(err);
         return res.status(400).json({ errors: ["failed to add image"] });
       }
 
-      const profile = await Profile.findOne({ user: req.user.id });
+      const fprofile = await Profile.findOne({ user: req.user.id });
 
-      if (!profile)
+      if (!fprofile)
         res.status(404).json({ errors: ["user does not have a profile yet"] });
 
-      const updated = await Profile.findOneAndUpdate(
-        { user: profile.user },
+      const profile = await Profile.findOneAndUpdate(
+        { user: fprofile.user },
         { image: file.name }
       );
 
-      await updated.save();
+      await profile.save();
 
       res.status(200).json({
-        updated,
+        profile,
       });
     });
   } catch (error) {
@@ -64,18 +64,18 @@ exports.createProfile = async (req, res) => {
   const hasProfile = await Profile.findOne({ user: req.user.id });
 
   if (hasProfile)
-    return res.status(400).json({ errors: ["user already has a profile"] });
+    return res.status(403).json({ errors: ["user already has a profile"] });
 
   try {
-    const profile = await new Profile({
+    const mprofile = await new Profile({
       description,
       social,
       user: req.user._id,
     });
 
-    const createdProfile = await profile.save();
+    const profile = await mprofile.save();
 
-    res.json(createdProfile);
+    res.json(profile);
   } catch (error) {
     console.error(error);
     res.status(500).json({ errors: ["server error"] });
@@ -100,7 +100,7 @@ exports.deleteProfile = async (req, res) => {
 
     await Profile.findByIdAndDelete({ _id: profileId });
 
-    res.status(400).json({ data: {}, success: true });
+    res.status(200).json({ data: {}, success: true });
   } catch (error) {
     res.status(500).json();
   }
@@ -119,7 +119,9 @@ exports.getProfiles = async (req, res) => {
       return res.status(404).json({ errors: ["no profiles found"] });
     }
 
-    res.status(200).json({ profiles });
+    res.status(200).json(profiles);
+
+    console.log("fires");
   } catch (error) {
     res.status(500).json(error);
   }
@@ -145,7 +147,7 @@ exports.getUserProfile = async (req, res) => {
 //edit profile
 
 exports.updateProfile = async (req, res) => {
-  const { description, facebook, instagram, youtube, psuedo } = req.body;
+  const { description, facebook, instagram, youtube } = req.body;
 
   const social = {
     facebook,
@@ -162,14 +164,10 @@ exports.updateProfile = async (req, res) => {
   try {
     const pro = await Profile.findOne({ user: req.user.id });
 
-    if (!pro)
-      return res
-        .status(404)
-        .json({ errors: ["user doesn nt have a profile yet profile"] });
+    if (!pro) return res.status(404).send("user does not have a profile");
 
     const obj = {
       description,
-      psuedo,
       social: {
         facebook,
         instagram,
@@ -184,9 +182,7 @@ exports.updateProfile = async (req, res) => {
     );
 
     if (!updatedProfile) {
-      return res
-        .status(500)
-        .json({ errors: ["server failed updating the document"] });
+      return res.status(500).send("an error occured during updating");
     }
 
     await updatedProfile.save();
@@ -194,6 +190,6 @@ exports.updateProfile = async (req, res) => {
     res.json(updatedProfile);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ errors: ["server error"] });
+    res.status(500).send("server error");
   }
 };

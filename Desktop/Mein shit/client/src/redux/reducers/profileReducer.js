@@ -7,6 +7,10 @@ import {
   UPDATE_FAIL,
   UPDATE_SUCCESS,
   GET_PROFILE,
+  PROFILE_DELETE_SUCCESS,
+  PROFILE_DELETE_FAILED,
+  GET_PROFILES_SUCCESS,
+  GET_PROFILES_FAIL,
 } from "./../actions/types";
 
 const initialState = {
@@ -21,7 +25,6 @@ const profileReducer = (state = initialState, action) => {
 
   switch (type) {
     case PROFILE_LOADED:
-    case IMAGE_UPLOADED:
     case UPDATE_SUCCESS:
       return {
         ...state,
@@ -41,11 +44,36 @@ const profileReducer = (state = initialState, action) => {
         profile: payload,
         loading: false,
       };
-
+    case PROFILE_DELETE_FAILED:
     case UPLOAD_FAILED:
     case UPDATE_FAIL:
       return {
         ...state,
+        loading: false,
+      };
+    case PROFILE_DELETE_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        profile: null,
+      };
+
+    case IMAGE_UPLOADED:
+      return {
+        ...state,
+        ...payload,
+        loading: false,
+      };
+    case GET_PROFILES_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        profiles: payload,
+      };
+    case GET_PROFILES_FAIL:
+      return {
+        ...state,
+        profiles: null,
         loading: false,
       };
 

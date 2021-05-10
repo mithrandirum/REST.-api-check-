@@ -35,7 +35,7 @@ exports.register = async (req, res) => {
 
     res.json({ token });
   } catch (err) {
-    err.status(500).send("server error");
+    res.status(500).send("server error");
   }
 };
 
@@ -110,42 +110,52 @@ exports.getUser = async (req, res) => {
 
 //@update user
 //@ private
-//@ auth/users/update/:id
+//@ auth/users/update
 
 exports.updateUser = async (req, res) => {
   const { email, password, psuedo } = req.body;
 
-  console.log(req);
+  const result = validateEmail(email);
+
+  if (!result) {
+    return res.status(400).json(["please enter a valid email"]);
+  }
+
+  if (password.length < 6) {
+    return res.status(400).json(["password must be at least carachter long"]);
+  }
+
+  if (psuedo.length < 3) {
+    return res.status(400).send(["psuedo min length is 3 carachter"]);
+  }
 
   try {
-    if (
-      req.params.id !== req.user._id.toString() &&
-      req.user.role !== "admin"
-    ) {
-      return res
-        .status(401)
-        .json([{ msg: "user unauthorized to commit this action" }]);
+    const pro = await User.findOne({ _id: req.user.id });
+
+    if (!pro) return res.status(404).send("user does not exist");
+
+    const obj = {
+      email,
+      password,
+      psuedo,
+    };
+
+    const updatedUser = await User.findOneAndUpdate({ _id: pro._id }, obj, {
+      new: true,
+    });
+
+    if (!updatedUser) {
+      return res.status(500).send("an error occured during updating");
     }
 
-    const updateUser = await User.findByIdAndUpdate(
-      { _id: req.params.id },
-      { email, password, psuedo },
-      { runValidators: true, new: true }
-    );
+    await updatedUser.save();
 
-    if (!updateUser) {
-      return res
-        .status(500)
-        .json([{ msg: "something happened while updating the user" }]);
-    }
+    const token = updatedUser.signJwtToken();
 
-    const user = await updateUser.save();
-
-    const token = user.signJwtToken();
-
-    res.status(200).json({ user, token });
+    res.json({ updatedUser, token });
   } catch (error) {
-    res.status(500).json([{ msg: error.message }]);
+    console.error(error);
+    res.status(500).send("server error");
   }
 };
 

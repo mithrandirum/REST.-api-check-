@@ -14,7 +14,9 @@ import Profile from "./component/profile/Profile";
 import { PrivateRoute } from "./component/routing/privateRoute";
 import { ProfileForm } from "./component/profile/create-profile-form";
 //import { CreateAccount } from "./component/profile/create-account";
-//import { EditProfile } from "./component/profile/edit-profile";
+import { UpdateUser } from "./component/profile/update-user";
+import { UpdateProfile } from "./component/profile/update-profile";
+import Profiles from "./component/profiles.js/Profiles";
 
 if (localStorage.token) {
   setToken(localStorage.token);
@@ -34,10 +36,12 @@ const App = () => {
       <Switch>
         <Route path='/login' component={Login} />
         <Route path='/register' component={Register} />
+        <Route path='/profiles' component={Profiles} />
         <PrivateRoute path='/create-profile' component={ProfileForm} />
         <PrivateRoute path='/profile' component={Profile} />
+        <PrivateRoute path='/update-profile' component={UpdateProfile} />
 
-        {/* <PrivateRoute path='/edit-profile/:userId' component={EditProfile} /> */}
+        <PrivateRoute path='/edit-profile/:profileId' component={UpdateUser} />
       </Switch>
 
       {/* <Container></Container> */}

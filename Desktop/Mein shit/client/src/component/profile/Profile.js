@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useParams } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Spinner from "react-bootstrap/Spinner";
 import Container from "react-bootstrap/Container";
@@ -8,15 +8,18 @@ import { getProfile } from "../../redux/actions/profileActions";
 import { Link } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 import FormControl from "react-bootstrap/Form";
+import img from "./image/photo_6097d510a6788705e8104749.jpg";
+import { uploadImage } from "./../../redux/actions/profileActions";
+
 const Profile = ({ history }) => {
   const authState = useSelector((state) => state.authReducer);
   const profileState = useSelector((state) => state.profileReducer);
 
-  const dispatch = useDispatch();
-
   useEffect(() => {
     dispatch(getProfile());
   }, [getProfile]);
+
+  const dispatch = useDispatch();
 
   const spinner = (
     <div className='center'>
@@ -33,26 +36,38 @@ const Profile = ({ history }) => {
       }`}</h2>
       <Button
         className='dark mt-4 ml-4'
-        onClick={() => history.push(`/edit-profile/${authState.user._id}`)}
+        onClick={() =>
+          history.push(`/edit-profile/${profileState.profile._id}`)
+        }
+        style={{ fontWeight: "bold" }}
       >
-        Edit Account
+        Edit User Info
       </Button>
-      <Button className='btn-danger mt-4 ml-4'>Delete Account </Button>
+
       <div className='card'>
         <div className='card-background'>
           <img
-            src='https://lh3.googleusercontent.com/-paS9Qm_3L9E/XGK6C0wkWbI/AAAAAAAAAyg/sqwN0ovgb4oD-8cmkNYhLY67SvWZSAnbQCLcBGAs/h120/askjd.jpg'
-            class='card-image'
+            className='card-background'
+            src={
+              profileState.profile && profileState.profile.image
+                ? process.env.PUBLIC_URL +
+                  `/image/photo_${
+                    profileState.loading && authState.user === null
+                      ? null
+                      : authState.user._id
+                  }.jpg`
+                : null
+            }
           />
         </div>
         <div className='card-info'>
-          <h1>
-            {profileState.loading ? null : profileState.profile.description}
-          </h1>
+          <h2 className='mt-2'>
+            {profileState.loading ? null : profileState.profile.psuedo}
+          </h2>
           <br />
-          <h1>
+          <h3>
             {profileState.loading ? null : profileState.profile.description}
-          </h1>
+          </h3>
         </div>
         <div class='card-social-icons'>
           <a
@@ -79,11 +94,18 @@ const Profile = ({ history }) => {
             <i class='fab fa-facebook-square'></i>
           </a>
         </div>
+        <Button
+          onClick={() => history.push("/update-profile")}
+          className='btn-dark mt-4 ml-4'
+          style={{ fontWeight: "bold" }}
+        >
+          Edit Profile{" "}
+        </Button>
       </div>
     </>
   );
 
-  if (profileState.profile) {
+  if (profileState.profile === null) {
     <Redirect to='/create-profile' />;
   }
 

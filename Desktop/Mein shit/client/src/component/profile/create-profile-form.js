@@ -24,7 +24,7 @@ export const ProfileForm = ({ history }) => {
   };
 
   const [data, setFormData] = useState(state);
-  const [file, setFile] = useState("");
+  const [file, setFile] = useState(null);
 
   const onChange = (e) => {
     setFormData({ ...data, [e.target.name]: e.target.value });
@@ -92,15 +92,8 @@ export const ProfileForm = ({ history }) => {
             />
           </Form.Group>
 
-          <h2 className='align'>add an image & discription</h2>
-          <Form.Group className='mt-4'>
-            <Form.File
-              id='exampleFormControlFile1'
-              label='add a Profile image'
-              // value = {file}
-              onChange={(e) => console.log(e.target.value)}
-            />
-          </Form.Group>
+          <h2 className='align'>add a discription</h2>
+
           <InputGroup>
             <InputGroup.Prepend>
               <InputGroup.Text style={{ fontSize: "large" }}>
