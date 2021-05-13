@@ -19,7 +19,8 @@ import { setAlert } from "./alertActions";
 import { loadUser } from "./authActions";
 import store from "../../store";
 
-export const createProfile = (profileData, history) => async (dispatch) => {
+export const createProfile = (profileData, history, e) => async (dispatch) => {
+  e.preventDefault();
   const config = {
     "Content-Type": "application/json",
   };
@@ -40,13 +41,10 @@ export const createProfile = (profileData, history) => async (dispatch) => {
 
     dispatch(setAlert("Profile Created", "success"));
 
-    setTimeout(() => history.push("/profile"), 2000);
+    history.push("./profile");
 
     console.log(res.data);
   } catch (err) {
-    if (err.response.status === 403) {
-      history.push("./profile");
-    }
     console.log(err);
     dispatch({
       type: PROFILE_ERROR,
@@ -67,7 +65,8 @@ export const getProfile = () => async (dispatch) => {
       });
     }
     dispatch(loadUser());
-  } catch (error) {
+  } catch (err) {
+    dispatch(setAlert(err.response.data.errors[0], "danger"));
     dispatch({
       type: PROFILE_ERROR,
     });
@@ -94,7 +93,7 @@ export const uploadImage = (file) => async (dispatch) => {
       payload: res.data,
     });
 
-    setAlert("image uploaded Succesfully", "success");
+    dispatch(setAlert("image uploaded Succesfully", "success"));
   } catch (error) {
     dispatch({
       type: UPLOAD_FAILED,

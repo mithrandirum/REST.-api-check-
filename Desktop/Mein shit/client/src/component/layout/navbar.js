@@ -3,9 +3,12 @@ import Nav from "react-bootstrap/Nav";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { logout } from "../../redux/actions/authActions";
+import { getProfiles } from "../../redux/actions/profileActions";
+import { getProfile } from "../../redux/actions/profileActions";
 
 const NavbarNav = ({ history }) => {
   const authState = useSelector((state) => state.authReducer);
+  const profileState = useSelector((state) => state.profileReducer);
   const dispatch = useDispatch();
 
   const questLink = (
@@ -21,6 +24,15 @@ const NavbarNav = ({ history }) => {
 
   const authLinks = (
     <Nav className='mr-auto'>
+      {profileState.profile !== null ? (
+        <Nav.Link as={Link} to='/profile'>
+          Profile
+        </Nav.Link>
+      ) : (
+        <Nav.Link as={Link} to='/create-profile'>
+          Create
+        </Nav.Link>
+      )}
       <Nav.Link as={Link} to='/profiles'>
         Members
       </Nav.Link>

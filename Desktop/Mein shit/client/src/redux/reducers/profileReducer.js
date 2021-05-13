@@ -37,6 +37,7 @@ const profileReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         profile: null,
+        profiles: null,
       };
     case GET_PROFILE:
       return {

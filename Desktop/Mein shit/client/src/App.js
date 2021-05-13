@@ -12,11 +12,14 @@ import { useDispatch } from "react-redux";
 import { setToken } from "./utils/setAuthToken";
 import Profile from "./component/profile/Profile";
 import { PrivateRoute } from "./component/routing/privateRoute";
-import { ProfileForm } from "./component/profile/create-profile-form";
-//import { CreateAccount } from "./component/profile/create-account";
+import { PrivateProfileRoute } from "./component/routing/privateProfileRoute";
+//import { CreateAccount } from "./componen"/profile/create-account";
 import { UpdateUser } from "./component/profile/update-user";
 import { UpdateProfile } from "./component/profile/update-profile";
 import Profiles from "./component/profiles.js/Profiles";
+import { Post } from "./component/post/post";
+import { ProfileForm } from "./component/profile/create-profile-form";
+import { BrowsePost } from "./component/post/BrowsePost";
 
 if (localStorage.token) {
   setToken(localStorage.token);
@@ -40,6 +43,7 @@ const App = () => {
         <PrivateRoute path='/create-profile' component={ProfileForm} />
         <PrivateRoute path='/profile' component={Profile} />
         <PrivateRoute path='/update-profile' component={UpdateProfile} />
+        <PrivateRoute path='/post/:postId' component={BrowsePost} />
 
         <PrivateRoute path='/edit-profile/:profileId' component={UpdateUser} />
       </Switch>

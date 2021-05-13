@@ -1,0 +1,191 @@
+.ccc {
+  margin: 0;
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+}
+
+.container-post {
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+  width: 50%;
+  height: 40rem;
+  /* border: 1px solid black; */
+  margin-top: 4rem;
+  padding: 0px;
+  left: 50%;
+  border-radius: 20px;
+  word-break: break-word;
+  box-shadow: 3px 3px 5px 6px #ccc;
+}
+
+.image-post {
+  height: 20rem;
+  width: 100%;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+}
+
+.inner-section {
+  display: flex;
+  position: relative;
+  height: 20rem;
+  margin-top: 2rem;
+  align-items: center;
+  justify-content: center;
+  /* margin: auto; */
+  text-align: center;
+  padding: 10px;
+}
+
+.like-comment {
+  display: flex;
+  position: absolute;
+  bottom: 0px;
+}
+
+.input-post {
+  position: absolute;
+  left: 5px;
+  padding: 5px;
+  bottom: 120px;
+  width: 500px;
+  height: 60px;
+  margin-top: 2rem;
+  border-radius: 15px;
+}
+
+.near {
+  position: absolute;
+  left: 10px;
+  bottom: 60px;
+}
+
+.comment {
+  display: flex;
+  width: 600px;
+  left: 20px;
+  left: 0px;
+  position: absolute;
+}
+
+.fuck {
+  display: flex;
+  width: 200px;
+}
+
+.created {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+}
+.like {
+  position: absolute;
+  right: 10px;
+  bottom: 70px;
+}
+
+.far {
+  padding: 20px;
+}
+
+.comment-section {
+  margin-top: 5rem;
+}
+
+.comment-item-Container {
+  margin: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid gray;
+  height: 10rem;
+  width: 50%;
+  position: relative;
+  border-radius: 30px;
+  box-shadow: 3px 3px 5px 6px #ccc;
+}
+.title {
+  top: 1px;
+  position: absolute;
+}
+.img-1 {
+  border: 1px solid black;
+  height: 100px;
+  width: 100px;
+  border-radius: 50%;
+  right: 40px;
+  top: 10px;
+  margin: auto;
+  position: absolute;
+}
+
+.uerpsuedo {
+  position: absolute;
+  right: 65px;
+  text-align: center;
+  font-weight: bold;
+
+  bottom: 5px;
+}
+
+.comment-item-text {
+  position: absolute;
+  width: 300px;
+  left: 10px;
+  top: 41px;
+  line-break: strict;
+}
+
+.area59 {
+  width: 500px;
+
+  left: 10px;
+}
+
+.link-button {
+  padding: 10px;
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  color: white;
+  background-color: rgb(50, 61, 124);
+  border-radius: 8px;
+  text-decoration: none;
+}
+
+.link-button:hover {
+  background-color: rgb(100, 100, 153);
+  color: white;
+}
+
+.boston {
+  margin-left: 45%;
+  margin-bottom: 2rem;
+}
+
+.jesus {
+  padding: 2px;
+  border: 1px solid white;
+  border-radius: 50%;
+  background-color: white;
+  color: rgb(44, 122, 185);
+  font-weight: bolder;
+}
+
+.baaack {
+  padding: 10px;
+  margin-top: 100px;
+
+  color: white;
+  background-color: rgb(44, 54, 107);
+  border-radius: 8px;
+  text-decoration: none;
+}
+
+.back-btn:hover {
+  background-color: rgb(75, 90, 161);
+  color: white;
+}

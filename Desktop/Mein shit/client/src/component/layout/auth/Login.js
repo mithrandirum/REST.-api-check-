@@ -37,6 +37,7 @@ const Login = ({ history }) => {
     }
 
     dispatch(login(formData, history));
+    // history.push("/profile");
   };
 
   const component = (
@@ -100,11 +101,9 @@ const Login = ({ history }) => {
     </div>
   );
 
-  if (authReducer.isAuthenticated) {
-    <Redirect to='/profile' />;
-  }
-
-  return <>{component}</>;
+  return (
+    <>{authReducer.isAuthenticated ? <Redirect to='/profile' /> : component}</>
+  );
 };
 
 export default Login;

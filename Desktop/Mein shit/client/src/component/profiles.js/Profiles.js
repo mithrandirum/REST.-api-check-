@@ -20,10 +20,12 @@ const Profiles = ({}) => {
       <Fragment>
         <h1 className='mt-4 ml-4'>Members</h1>
         <h2 className='mt-4 ml-4'>
-          <i class='fas fa-monument'></i> Browse and connect with Members
+          <i className='fas fa-monument'></i> Browse and connect with Members
         </h2>
         <div className='flex'>
-          {!profileState.loading && profileState.profiles.length > 0 ? (
+          {!profileState.loading &&
+          profileState.profiles !== null &&
+          profileState.profiles.length > 0 ? (
             profileState.profiles.map((profile) => (
               <ProfileItem
                 className='profile-item'

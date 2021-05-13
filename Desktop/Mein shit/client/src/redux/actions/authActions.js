@@ -65,7 +65,6 @@ export const login = (formData, history) => async (dispatch) => {
       formData,
       config
     );
-    dispatch(getProfile());
 
     if (res.data) {
       dispatch({
@@ -73,9 +72,11 @@ export const login = (formData, history) => async (dispatch) => {
         payload: res.data,
       });
 
+      dispatch(getProfile());
+
       dispatch(setAlert("successfully login attemps", "success"));
 
-      setTimeout(() => history.push(`/profile`), 2000);
+      setTimeout(history.push(`/profile`), 2000);
     }
   } catch (err) {
     dispatch({

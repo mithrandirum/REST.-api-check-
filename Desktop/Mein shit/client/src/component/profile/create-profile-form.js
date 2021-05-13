@@ -4,7 +4,7 @@ import FormControl from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { Link, Redirect } from "react-router-dom";
 import Alert from "react-bootstrap/Alert";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import InputGroup from "react-bootstrap/InputGroup";
 import { createProfile, uploadImage } from "../../redux/actions/profileActions";
@@ -22,6 +22,12 @@ export const ProfileForm = ({ history }) => {
     instagram: "",
     youtube: "",
   };
+
+  useEffect(() => {
+    !profileState.loading && profileState.profile !== null && (
+      <Redirect to='/profile' />
+    );
+  }, [profileState.profile]);
 
   const [data, setFormData] = useState(state);
   const [file, setFile] = useState(null);
@@ -115,6 +121,7 @@ export const ProfileForm = ({ history }) => {
             className='mt-4'
             size='lg'
             block
+            onClick={() => <Redirect to='/profile' />}
           >
             Submit
           </Button>
@@ -123,9 +130,9 @@ export const ProfileForm = ({ history }) => {
     </div>
   );
 
-  if (authState.isAuthenticated && profileState.profile == !null) {
-    <Redirect to='/profile' />;
-  }
+  // if (authState.isAuthenticated && profileState.profile == !null) {
+  //   <Redirect to='/profile' />;
+  // }
 
-  return <>{compo}</>;
+  return profileState.profile == !null ? <Redirect to='/profile' /> : compo;
 };

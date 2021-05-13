@@ -9,6 +9,7 @@ body {
   font-size: 17px;
   color: #926239;
   line-height: 1.6;
+  position: relative;
 }
 
 #showcase {
@@ -93,15 +94,18 @@ body {
 }
 
 .card {
-  background-color: #f4f3f3;
-
+  align-items: center;
+  justify-content: center;
+  margin: auto;
   /* width: 350px;                               
   /* height: 450px; */
   width: 100vh;
   height: 60vh;
-
+  position: relative;
+  word-break: break-word;
+  box-shadow: 3px 3px 5px 6px #ccc;
   text-align: center;
-  margin: 10%;
+  /* margin: 10%; */
   border-radius: 15px;
   margin-top: 30px;
   border: none;
@@ -109,26 +113,24 @@ body {
 
 .card-background {
   background: linear-gradient(to right, #009688, #4caf50);
+  position: absolute;
+
   height: 350px;
   width: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  border: 6px solid #f4f3f3;
+  /* height: 350px;
+  width: 100%; */
   /* border-top-left-radius: 8px;
   border-top-right-radius: 8px; */
   border: none;
 }
 
-.card-image {
-  border-radius: 50%;
-  width: 120px;
-  height: auto;
-  position: relative;
-  top: 100px;
-  border: 6px solid #f4f3f3;
-  border: none;
-}
-
 .card-info {
-  margin-top: 30px;
-  padding: 10px;
+  position: absolute;
+  bottom: 95px;
 }
 
 .fab {
@@ -177,4 +179,26 @@ ptofle container  */
 
 .profiles {
   display: block;
+}
+
+.a {
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  margin-top: 15%;
+}
+
+/* .alright {
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+} */
+
+.cadre {
+  align-items: center;
+  justify-content: center;
+  margin-top: 4rem;
+  left: 10px;
+  bottom: 10px;
+  position: absolute;
 }
