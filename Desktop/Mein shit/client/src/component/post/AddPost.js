@@ -1,13 +1,11 @@
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import InputGroup from "react-bootstrap/InputGroup";
-import FormControl from "react-bootstrap/FormControl";
 import Form from "react-bootstrap/Form";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useState } from "react";
 import { addPost } from "../../redux/actions/postActions";
 
-export const AddPost = ({ show, handleClose }) => {
+export const AddPost = ({ show, handleClose, handleShow }) => {
   const dispatch = useDispatch();
 
   const [file, setFile] = useState(null);
@@ -34,6 +32,10 @@ export const AddPost = ({ show, handleClose }) => {
 
   return (
     <>
+      {/* <Button variant='primary' onClick={handleShow}>
+        Launch demo modal
+      </Button> */}
+
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>publish a post</Modal.Title>

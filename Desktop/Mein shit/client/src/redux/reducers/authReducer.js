@@ -9,6 +9,8 @@ import {
   LOGOUT_SUCCESS,
   USER_UPDATE_FAILED,
   USER_UPDATE_SUCCESS,
+  DELETE_USER_SUCCESS,
+  DELETE_USER_FAIL,
 } from "../actions/types";
 
 const intialState = {
@@ -53,12 +55,29 @@ export default function (state = intialState, action) {
         loading: false,
         user: null,
       };
+
+    case DELETE_USER_FAIL:
     case LOGOUT_FAIL:
       return {
         ...state,
         isAuthenticated: true,
         loading: false,
       };
+    case DELETE_USER_SUCCESS:
+      return {
+        user:
+          state.user._id === payload && state.user.role !== "admin"
+            ? null
+            : state.user,
+        loading: false,
+        isAthuenticated:
+          state.user._id === payload && state.user.role !== "admin"
+            ? null
+            : true,
+
+        loading: false,
+      };
+
     default:
       return state;
   }

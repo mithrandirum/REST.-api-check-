@@ -9,7 +9,7 @@ import { setAlert } from "./../../../redux/actions/alertActions";
 import { register } from "../../../redux/actions/authActions";
 import Spinner from "react-bootstrap/Spinner";
 
-const Login = ({ history }) => {
+const Register = ({ history }) => {
   const alertState = useSelector((state) => state.alertReducer);
   const authReducer = useSelector((state) => state.authReducer);
   const dispatch = useDispatch();
@@ -35,6 +35,7 @@ const Login = ({ history }) => {
     e.preventDefault();
 
     dispatch(register(formData, history));
+    console.log(formData);
 
     authReducer.isAuthenticated &&
       dispatch(setAlert("please fill all the fields", "success"));
@@ -44,50 +45,53 @@ const Login = ({ history }) => {
 
   const component = (
     <Container>
-      <h1 className='mt-4' style={{ textAlign: "center" }}>
+      <h1 className='mt-4' style={{ textAlign: "center", color: "gray" }}>
         Register an Account
       </h1>
-      {alertState.length > 0 &&
-        alertState.map((alert, index) => (
-          <Alert key={index} variant={alert.alertype} className='mt-5'>
-            {alert.msg}
-          </Alert>
-        ))}
+
       <Form className='mt-5' onSubmit={(e) => onSubmit(e)}>
         <Form.Group controlId='formBasicEmail'>
-          <Form.Label>Psuedo</Form.Label>
+          <Form.Label style={{ color: "white" }}>Psuedo</Form.Label>
           <Form.Control
+            style={{ opacity: "0.9" }}
             type='name'
             placeholder='Choose a psuedo'
             onChange={(e) => onChange(e)}
             name='psuedo'
             value={psuedo}
           />
-          <Form.Text className='text-muted'>what should we call you</Form.Text>
+          <Form.Text className='text-muted' style={{ color: "white" }}>
+            what should we call you
+          </Form.Text>
         </Form.Group>
         <Form.Group controlId='formBasicEmail'>
-          <Form.Label>Email address</Form.Label>
+          <Form.Label style={{ color: "white" }}>Email address</Form.Label>
           <Form.Control
+            style={{ opacity: "0.9" }}
             type='email'
             placeholder='email'
             onChange={(e) => onChange(e)}
             name='email'
             value={email}
           />
-          <Form.Text className='text-muted'>
+          <Form.Text className='text-muted' style={{ color: "white" }}>
             Please enter a Valid Email Address
           </Form.Text>
         </Form.Group>
-        <Form.Group controlId='formBasicPassword'>
+        <Form.Group
+          controlId='formBasicPassword'
+          style={{ color: "white", opacity: "2" }}
+        >
           <Form.Label>Password</Form.Label>
           <Form.Control
+            style={{ opacity: "0.9" }}
             type='password'
             placeholder='Password'
             onChange={(e) => onChange(e)}
             name='password'
             value={password}
           />
-          <Form.Text className='text-muted'>
+          <Form.Text style={{ color: "white" }} className='text-muted'>
             password must be at least 6 carachter long
           </Form.Text>
         </Form.Group>
@@ -110,10 +114,23 @@ const Login = ({ history }) => {
   );
 
   return (
-    <div className='form-width dude'>
-      {authReducer.loading ? spin : component}
-    </div>
+    <>
+      <div className='register-alright'>
+        <div className='alluring' style={{ left: "43%" }}>
+          {" "}
+          {alertState.length > 0 &&
+            alertState.map((alert, index) => (
+              <Alert key={index} variant={alert.alertype} className='mt-5'>
+                {alert.msg}
+              </Alert>
+            ))}
+        </div>
+        <div className='form-width dude'>
+          {authReducer.loading ? spin : component}
+        </div>
+      </div>
+    </>
   );
 };
 
-export default Login;
+export default Register;

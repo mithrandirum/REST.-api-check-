@@ -2,71 +2,157 @@ import React from "react";
 import Button from "react-bootstrap/Button";
 import "./styles.css";
 import { ComentItem } from "./ComentItem";
-import { addPost } from "../../redux/actions/postActions";
 import { useDispatch, useSelector } from "react-redux";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { getPost } from "../../redux/actions/postActions";
+import {
+  addComment,
+  addLike,
+  removeLike,
+  removePost,
+} from "../../redux/actions/postActions";
 
-export const Post = ({ post: { text, image, likes, comments, _id } }) => {
-  const [openComment, setOpenComment] = useState(false);
-  const yes = [1, 1, 1, 1, 1, 1, 1, 1];
+import Moment from "react-moment";
+
+export const Post = ({
+  history,
+  post: { text, image, likes, comments, _id, createdAt },
+}) => {
+  const [comment, setComment] = useState("");
   const dispatch = useDispatch();
 
-  return (
+  useEffect(() => {
+    getPost();
+  }, [dispatch]);
+
+  const postState = useSelector((state) => state.postReducer);
+  const profileState = useSelector((state) => state.profileReducer);
+  const authState = useSelector((state) => state.authReducer);
+
+  const [openComment, setOpenComment] = useState(false);
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    dispatch(addComment(comment, _id, "userPosts"));
+    setComment("");
+  };
+
+  console.log(postState);
+
+  const click = () => {
+    dispatch(getPost(_id));
+    history.push(`/post/${_id}`);
+  };
+
+  const compo = (
     <>
-      <div className='ccc'>
-        <div className='container-post'>
-          <img
-            className='image-post'
-            src={image && process.env.PUBLIC_URL + `/postImage/${image}`}
-          ></img>
-          <div className='inner-section'>
-            <h2 className='title'>this the title</h2>
-            <p>{text}</p>
-            <Link
-              className='link-button'
-              to={`post/${_id}`}
-              style={{ textDecoration: "none" }}
-              onClick={() => dispatch(getPost(_id))}
+      <div className='this'>
+        <img
+          alt='boaya'
+          className='image-post'
+          src={image && process.env.PUBLIC_URL + `/postImage/${image}`}
+        ></img>
+        <div className='inner-section-2'>
+          <p className='title' style={{ padding: "10px" }}>
+            {text}
+          </p>
+
+          <div className='comment-2'>
+            <Button
+              className='mr-4'
+              onClick={() => dispatch(removePost(_id))}
+              className='btn-danger dng'
             >
-              browse Post
-            </Link>
+              {" "}
+              delete post{" "}
+            </Button>
+
+            <form>
+              <textarea
+                className='input-post-2'
+                placeholder='add comment'
+                onChange={(e) => setComment(e.target.value)}
+              />
+            </form>
           </div>
 
-          <div className='like-comment'>
-            <div className='comment'>
-              <form onSumbit={() => console.log("yes")}>
-                <textarea className='input-post' placeholder='add comment' />
-                <Button className='mb-5 ml-2'>add comment</Button>
-              </form>
-            </div>
-            <div className='like'>
-              <i class='far fa-thumbs-up'>
-                {" "}
-                <bold>{likes.length === 0 ? null : likes.length}</bold>
-              </i>
+          <Link
+            className='link-button-3'
+            style={{ textDecoration: "none" }}
+            onClick={() => click()}
+          >
+            browse Post
+          </Link>
 
-              <i class='far fa-thumbs-down'>
+          <div className='like-2'>
+            <h3
+              className='point'
+              onClick={() => dispatch(addLike(_id, "userPosts"))}
+            >
+              <i
+                className='far fa-thumbs-up'
+                style={{ width: "15px", height: "16px", padding: "0px" }}
+                // onClick={dispatch(addLike(_id))}
+              >
+                <bold>{likes.length === 0 ? null : likes.length}</bold>{" "}
+              </i>
+            </h3>
+            <h3
+              className='point'
+              onClick={() => {
+                dispatch(removeLike(_id, authState.user._id));
+              }}
+            >
+              <i
+                style={{ height: "16px", width: "15px", marginLeft: "5px" }}
+                className='far fa-thumbs-down'
+              >
                 {" "}
                 <bold></bold>
               </i>
-              <p>created in 20/02/1992</p>
-            </div>
+            </h3>
           </div>
+          <Link
+            className='link-button-2'
+            value={comment}
+            //to={`#/${_id}`}
+            style={{ textDecoration: "none" }}
+            onClick={(e) => onSubmit(e)}
+          >
+            add a comment
+          </Link>
+          <p className='created-2'>
+            Created At{" "}
+            <Moment format='YYYY/MM/DD'>
+              {postState && !postState.loading && createdAt}
+            </Moment>
+          </p>
         </div>
-        <Button onClick={() => setOpenComment(!openComment)}>discusion</Button>
 
-        {/* <div className='comment-section'>
-          { openComment &&  <ul>
-            {yes.map((el, index) => (
-              <li key={index}>
-                <ComentItem el={el} />
-              </li>
-            ))}
-          </ul> }
-        </div> */}
+        <Button
+          className='mb-4'
+          onClick={() => setOpenComment(!openComment)}
+          disabled={comments.length === 0 && true}
+        >
+          <label> {comments.length === 0 ? "No" : ""}</label> discussions
+          {"  "}
+          <labal className={comments.length === 0 ? "" : "jesus"}>
+            {comments.length === 0 ? "" : comments.length}
+          </labal>
+        </Button>
       </div>
+      {openComment && (
+        <ul className=''>
+          {comments.map((comment, index) => (
+            <li key={index}>
+              <ComentItem comment={comment} postId={_id} />
+            </li>
+          ))}
+        </ul>
+      )}
     </>
   );
+
+  return postState.loading ? <h1>fucking ayy</h1> : compo;
 };

@@ -1,7 +1,7 @@
 import Form from "react-bootstrap/Form";
 import FormControl from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import { Redirect, useParams } from "react-router-dom";
+//import { useParams } from "react-router-dom";
 import Alert from "react-bootstrap/Alert";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,9 +14,9 @@ import { profileUpdate } from "../../redux/actions/profileActions";
 // import { updateUser } from "../../redux/actions/authActions";
 import { uploadImage } from "./../../redux/actions/profileActions";
 
-export const UpdateProfile = ({ history, match }) => {
-  const id = useParams();
+import { setAlert } from "./../../redux/actions/alertActions";
 
+export const UpdateProfile = ({ history, match }) => {
   const alertSate = useSelector((state) => state.alertReducer);
   // const authState = useSelector((state) => state.authReducer);
   // const profileState = useSelector((state) => state.profileReducer);
@@ -54,26 +54,41 @@ export const UpdateProfile = ({ history, match }) => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-
-    dispatch(profileUpdate(data, history));
+    if (
+      facebook === "" ||
+      youtube === "" ||
+      description === "" ||
+      instagram === ""
+    ) {
+      dispatch(setAlert("please fill in all feilds", "danger"));
+    } else {
+      dispatch(profileUpdate(data, history));
+    }
   };
 
   const compo = (
     <>
-      <div className='west'>
-        <h1 className='ml-4 mt-4'>edit profile info</h1>
-        <div className='form-width'>
-          {alertSate.length > 0 &&
-            alertSate.map((alert, index) => (
-              <Alert key={index} variant={alert.alertype} className='mt-5'>
-                {alert.msg}
-              </Alert>
-            ))}
-        </div>
+      <div className='alluring'>
+        {alertSate.length > 0 &&
+          alertSate.map((alert, index) => (
+            <Alert key={index} variant={alert.alertype} className='mt-5'>
+              {alert.msg}
+            </Alert>
+          ))}
+      </div>
 
-        <Form className='form-width' onSubmit={(e) => onSubmit(e)}>
+      <div className='west'>
+        <div className='form-width'></div>
+
+        <Form
+          style={{ textAlign: "center", color: "white" }}
+          className='form-width-2'
+          onSubmit={(e) => onSubmit(e)}
+        >
           <Form.Group>
-            <h2 className='mt-4 align'>update social Links</h2>
+            <h2 style={{ textAlign: "center" }} className='align'>
+              update social Links
+            </h2>
             <Form.Group>
               <i className='fab fa-facebook-square'></i>
               <Form.Label>Facebook...</Form.Label>
@@ -109,9 +124,10 @@ export const UpdateProfile = ({ history, match }) => {
                 onChange={(e) => onChange(e)}
               />
             </Form.Group>
-            <Form className='form-width'>
+            <Form className=''>
               <Form.Group>
                 <Form.File
+                  style={{ fontSize: "large" }}
                   id='exampleFormControlFile1'
                   label='Choose a profile image'
                   onChange={(e) => onImage(e)}
@@ -123,20 +139,38 @@ export const UpdateProfile = ({ history, match }) => {
                 className='mt-4'
                 size='lg'
                 onClick={(e) => submitImage(e)}
+                style={{
+                  marginBottom: "10px",
+                }}
               >
                 Submit Image
               </Button>
             </Form>
 
-            <h2 className='align'> add a discription</h2>
+            <h2
+              style={{
+                marginBottom: "10px",
+              }}
+              className='align'
+            >
+              {" "}
+              add a discription
+            </h2>
 
             <InputGroup>
               <InputGroup.Prepend>
-                <InputGroup.Text style={{ fontSize: "large" }}>
+                <InputGroup.Text
+                  style={{
+                    fontSize: "large",
+                    marginBottom: "10px",
+                    marginTop: "10px",
+                  }}
+                >
                   Add a description
                 </InputGroup.Text>
               </InputGroup.Prepend>
               <FormControl
+                plaseholder='enter description...'
                 as='textarea'
                 aria-label='With textarea'
                 style={{ width: "40vh" }}
@@ -160,20 +194,5 @@ export const UpdateProfile = ({ history, match }) => {
     </>
   );
 
-  return compo;
+  return <div className='update-container'>{compo}</div>;
 };
-
-{
-  /* <Form onSubmit={(e) => submitImage(e)}>
-        <Form.Group>
-          <Form.File
-            id='exampleFormControlFile1'
-            label='Choose a profile image'
-            onChange={(e) => onImage(e)}
-          />
-        </Form.Group>
-        <Button variant='primary' type='submit' className='mt-4' size='lg'>
-          Submit Image
-        </Button>
-      </Form> */
-}

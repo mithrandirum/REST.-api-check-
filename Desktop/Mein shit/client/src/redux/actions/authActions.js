@@ -11,11 +11,12 @@ import {
   Empty_PROFILE,
   USER_UPDATE_SUCCESS,
   USER_UPDATE_FAILED,
+  DELETE_USER_SUCCESS,
+  DELETE_USER_FAIL,
 } from "./types";
 import { setToken } from "../../utils/setAuthToken";
 import store from "../../store";
 import axios from "axios";
-import { getProfile } from "./profileActions";
 
 //register user
 export const register = (formData, history) => async (dispatch) => {
@@ -35,6 +36,8 @@ export const register = (formData, history) => async (dispatch) => {
       payload: res.data,
     });
     dispatch(loadUser());
+
+    dispatch(setAlert("register success", "success"));
 
     history.push("/create-profile");
   } catch (err) {
@@ -66,19 +69,21 @@ export const login = (formData, history) => async (dispatch) => {
       config
     );
 
-    if (res.data) {
-      dispatch({
-        type: LOGIN_SUCCESS,
-        payload: res.data,
-      });
+    console.log(res.data);
+    dispatch({
+      type: LOGIN_SUCCESS,
+      payload: res.data,
+    });
+    console.log("this is the response of the login request ==>", res.data);
 
-      dispatch(getProfile());
+    dispatch(loadUser());
+    // dispatch(getProfile());
 
-      dispatch(setAlert("successfully login attemps", "success"));
+    dispatch(setAlert("successfully login attemps", "success"));
 
-      setTimeout(history.push(`/profile`), 2000);
-    }
+    setTimeout(history.push(`/profile`), 2000);
   } catch (err) {
+    console.log(err);
     dispatch({
       type: LOGIN_FAIL,
     });
@@ -108,6 +113,7 @@ export const loadUser = () => async (dispatch) => {
       type: AUTH_ERROR,
     });
   }
+  // dispatch(logout());
 };
 
 export const logout = (history) => async (dispatch) => {
@@ -115,7 +121,7 @@ export const logout = (history) => async (dispatch) => {
   dispatch({
     type: LOGOUT_SUCCESS,
   });
-  history.push("/");
+  // history.push("/");
 
   dispatch({
     type: Empty_PROFILE,
@@ -132,13 +138,13 @@ export const logout = (history) => async (dispatch) => {
 export const updateUser = (data, history) => async (dispatch) => {
   const config = { "Content-Type": "application/json" };
 
-  const res = await axios.put(
-    `http://localhost:5000/auth/users/update`,
-    data,
-    config
-  );
-
   try {
+    const res = await axios.put(
+      `http://localhost:5000/auth/users/update`,
+      data,
+      config
+    );
+
     dispatch({
       type: USER_UPDATE_SUCCESS,
       payload: res.data,
@@ -151,7 +157,34 @@ export const updateUser = (data, history) => async (dispatch) => {
     dispatch(setAlert(err.response.data[0], "danger"));
     console.log(err.response.data);
     dispatch({
-      USER_UPDATE_FAILED,
+      type: USER_UPDATE_FAILED,
     });
+  }
+};
+
+export const deleteUser = (userId) => async (dispatch) => {
+  try {
+    const res = await axios.delete(
+      `http://localhost:5000/auth/users/delete/${userId}`
+    );
+
+    console.log(res);
+
+    dispatch({
+      type: DELETE_USER_SUCCESS,
+      payload: userId,
+    });
+
+    //dispatch(logout());
+
+    dispatch(setAlert("User Deletion succesful", "success"));
+  } catch (err) {
+    // dispatch({
+    //   type: DELETE_USER_FAIL,
+    // });
+    console.log(err);
+
+    // dispatch(setAlert(err.response.data, "danger"));
+    //console.log(err.response.data);
   }
 };

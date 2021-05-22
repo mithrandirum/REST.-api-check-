@@ -1,5 +1,5 @@
 import { Link, Redirect } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 import React from "react";
 
@@ -15,7 +15,7 @@ const Landing = () => {
           officiis ipsum officia numquam expedita ullam.
         </p>
         <Link to='/register' className='button'>
-          Sign Up
+          Register
         </Link>
         <p style={{ marginTop: "2rem" }}>
           <small>already registered ?</small>

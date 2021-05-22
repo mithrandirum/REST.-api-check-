@@ -1,6 +1,7 @@
 * {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 
 body {
@@ -100,14 +101,36 @@ body {
   /* width: 350px;                               
   /* height: 450px; */
   width: 100vh;
-  height: 60vh;
+  height: 75vh;
   position: relative;
   word-break: break-word;
-  box-shadow: 3px 3px 5px 6px #ccc;
+  box-shadow: 3px 3px 5px 6px rgb(0, 0, 0);
   text-align: center;
   /* margin: 10%; */
   border-radius: 15px;
-  margin-top: 30px;
+  position: absolute;
+  top: 250px;
+  border: none;
+}
+
+.card-2 {
+  backdrop-filter: blur(4px);
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+  /* width: 350px;                               
+  /* height: 450px; */
+  width: 100vh;
+  height: 75vh;
+  position: relative;
+  word-break: break-word;
+  box-shadow: 3px 3px 5px 6px rgb(0, 0, 0);
+  text-align: center;
+  /* margin: 10%; */
+  border-radius: 15px;
+  position: absolute;
+  top: 150px;
+  left: 23%;
   border: none;
 }
 
@@ -130,7 +153,30 @@ body {
 
 .card-info {
   position: absolute;
-  bottom: 95px;
+  bottom: 150px;
+}
+
+.card-social-icons-2 {
+  position: absolute;
+  bottom: 10px;
+}
+
+.card-info-2 {
+  position: absolute;
+  bottom: 0;
+  left: 43%;
+  color: white;
+}
+
+.card-info-3 {
+  position: absolute;
+  top: 50%;
+  left: 47%;
+}
+
+.card-info-4 {
+  position: absolute;
+  top: 52%;
 }
 
 .fab {
@@ -161,18 +207,51 @@ ptofle container  */
 
 .welcome {
   margin-left: 30px;
-  margin-top: 30px;
+  /* margin-top: 90px; */
+  color: white;
 }
 
 .form-width {
+  backdrop-filter: blur(4px);
+  padding: 20px;
+  position: absolute;
+  top: 200px;
   width: 60vh;
   justify-content: center;
   align-items: center;
   margin: auto;
+  left: 35%;
 }
-/* 
-.west {
-} */
+
+.form-width-2 {
+  backdrop-filter: blur(4px);
+  padding: 20px;
+
+  position: absolute;
+  top: 200px;
+  width: 60vh;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+  left: 35%;
+}
+
+.update-container {
+  min-height: 150vh;
+  position: relative;
+  background-image: url("./adrien-delforge-0LUqdizULdY-unsplash.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.register-alright {
+  position: relative;
+}
+
+/* .west { */
+/* position: absolute; */
+/* top: 10rem;
+} 
 .align {
   text-align: center;
 }

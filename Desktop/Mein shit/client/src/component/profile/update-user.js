@@ -1,11 +1,9 @@
 import Form from "react-bootstrap/Form";
-import FormControl from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import { Redirect, useParams } from "react-router-dom";
 import Alert from "react-bootstrap/Alert";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import InputGroup from "react-bootstrap/InputGroup";
+import { useParams } from "react-router-dom";
 // import {
 //   createProfile,
 //   updateProfile,
@@ -13,7 +11,6 @@ import InputGroup from "react-bootstrap/InputGroup";
 import { updateUser } from "../../redux/actions/authActions";
 import { deleteProfile } from "../../redux/actions/profileActions";
 import { setAlert } from "../../redux/actions/alertActions";
-import { check } from "express-validator";
 
 export const UpdateUser = ({ history }) => {
   const alertSate = useSelector((state) => state.alertReducer);
@@ -44,7 +41,10 @@ export const UpdateUser = ({ history }) => {
       dispatch(
         setAlert("password must be at least 6 carachter long", "danger")
       );
+    } else {
+      dispatch(updateUser(data, history));
     }
+    //
   };
 
   const profileId = useParams();
@@ -61,14 +61,11 @@ export const UpdateUser = ({ history }) => {
     e.preventDefault();
 
     check(psuedo, email, password);
-
-    dispatch(updateUser(data, history));
   };
 
   const compo = (
-    <div className='west'>
-      <h1 className='ml-4 mt-4'>Update Credentials</h1>
-      <div className='form-width'>
+    <>
+      <div className='alluring' style={{ left: "720px" }}>
         {alertSate.length > 0 &&
           alertSate.map((alert, index) => (
             <Alert key={index} variant={alert.alertype} className='mt-5'>
@@ -76,78 +73,92 @@ export const UpdateUser = ({ history }) => {
             </Alert>
           ))}
       </div>
+      <div className='west'>
+        <div className='form-width'></div>
 
-      <Form className='form-width mt-4' onSubmit={(e) => onSubmit(e)}>
-        <Form.Group>
+        <Form
+          className='form-width mt-4'
+          style={{ textAlign: "center", color: "white" }}
+          onSubmit={(e) => onSubmit(e)}
+        >
+          <h1 className='ml-4 mt-4' style={{ color: "white" }}>
+            Update Credentials
+          </h1>
           <Form.Group>
-            <Form.Label>psuedo</Form.Label>
-            <Form.Control
-              type='text'
-              placeholder='add psuedo...'
-              value={psuedo}
-              name='psuedo'
-              onChange={(e) => onChange(e)}
-            />
-          </Form.Group>
+            <Form.Group>
+              <Form.Label>psuedo</Form.Label>
+              <Form.Control
+                type='text'
+                placeholder='add psuedo...'
+                value={psuedo}
+                name='psuedo'
+                onChange={(e) => onChange(e)}
+              />
+            </Form.Group>
 
-          <Form.Group>
-            <Form.Label>email</Form.Label>
-            <Form.Control
-              type='text'
-              placeholder='add an email...'
-              value={email}
-              name='email'
-              onChange={(e) => onChange(e)}
-            />
-          </Form.Group>
-          <Form.Group>
-            <Form.Label>password</Form.Label>
-            <Form.Control
-              type='password'
-              placeholder='password...'
-              value={password}
-              name='password'
-              onChange={(e) => onChange(e)}
-            />
-          </Form.Group>
+            <Form.Group>
+              <Form.Label>email</Form.Label>
+              <Form.Control
+                type='text'
+                placeholder='add an email...'
+                value={email}
+                name='email'
+                onChange={(e) => onChange(e)}
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>password</Form.Label>
+              <Form.Control
+                type='password'
+                placeholder='password...'
+                value={password}
+                name='password'
+                onChange={(e) => onChange(e)}
+              />
+            </Form.Group>
 
-          <Button
-            variant='primary'
-            type='submit'
-            className='mt-4'
-            size='lg'
-            block
-          >
-            Submit
-          </Button>
-        </Form.Group>
-        <h2>
-          <i className='fas fa-user-edit mt-2'> update Profile info{"    "}</i>
-          {"  "}
-          <Button
-            onClick={() => history.push("/update-profile")}
-            variant='outline-secondary'
-          >
-            Update
-          </Button>
-          {"   "}
-        </h2>
-        <h2 className='mt-4'>
-          <i class='fas fa-user-slash'></i>delete user profile {"    "}
-          {"  "}
-          <Button onClick={() => submitDelete()} variant='outline-danger'>
-            Delete
-          </Button>
-          {"   "}
-        </h2>
-      </Form>
-    </div>
+            <Button
+              variant='primary'
+              type='submit'
+              className='mt-4'
+              size='lg'
+              block
+            >
+              Submit
+            </Button>
+          </Form.Group>
+          <h2>
+            <i className='fas fa-user-edit mt-2'>
+              {" "}
+              update Profile info{"    "}
+            </i>
+            {"  "}
+            <Button
+              onClick={() => history.push("/update-profile")}
+              className='btn-dark'
+            >
+              Update
+            </Button>
+            {"   "}
+          </h2>
+          <h2 className='mt-4'>
+            <i class='fas fa-user-slash'></i>delete user profile {"    "}
+            {"  "}
+            <Button onClick={() => submitDelete()} className='btn-danger'>
+              Delete
+            </Button>
+            {"   "}
+          </h2>
+        </Form>
+      </div>
+    </>
   );
 
   function validateEmail(email) {
-    const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    const re =
+      /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(email);
   }
 
-  return compo;
+  return <div className='update-container'>{compo}</div>;
 };

@@ -1,5 +1,4 @@
 import React from "react";
-import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { Link } from "react-router-dom";
@@ -7,10 +6,9 @@ import Alert from "react-bootstrap/Alert";
 import { useState } from "react";
 import { login } from "../../../redux/actions/authActions";
 import { useDispatch, useSelector } from "react-redux";
-import Spinner from "react-bootstrap/Spinner";
 import { Redirect } from "react-router-dom";
 import { setAlert } from "../../../redux/actions/alertActions";
-import { getProfile } from "../../../redux/actions/profileActions";
+//import { getProfile } from "../../../redux/actions/profileActions";
 
 const Login = ({ history }) => {
   const authReducer = useSelector((state) => state.authReducer);
@@ -41,8 +39,8 @@ const Login = ({ history }) => {
   };
 
   const component = (
-    <div className='form-width dude'>
-      <h1 className='mt-4 mb-4' style={{ textAlign: "center" }}>
+    <div className='form-width dude mt-4'>
+      <h1 className='' style={{ textAlign: "center", color: "gray" }}>
         Login to your Account
       </h1>
       {alerReducer.length > 0 &&
@@ -53,28 +51,30 @@ const Login = ({ history }) => {
         ))}
       <Form onSubmit={(e) => onSubmit(e)}>
         <Form.Group controlId='formBasicEmail'>
-          <Form.Label>Email address</Form.Label>
+          <Form.Label style={{ color: "white" }}>Email address</Form.Label>
           <Form.Control
             type='email'
             placeholder='Enter email'
             onChange={(e) => onChange(e)}
             name='email'
             value={email}
+            style={{ opacity: "0.9" }}
           />
-          <Form.Text className='text-muted'>
+          <Form.Text style={{ color: "white" }} className='text-muted'>
             Please enter a Valid Email Address
           </Form.Text>
         </Form.Group>
         <Form.Group controlId='formBasicPassword'>
-          <Form.Label>Password</Form.Label>
+          <Form.Label style={{ color: "white" }}>Password</Form.Label>
           <Form.Control
             type='password'
             placeholder='Password'
             onChange={(e) => onChange(e)}
             name='password'
             value={password}
+            style={{ opacity: "0.9" }}
           />
-          <Form.Text className='text-muted'>
+          <Form.Text className='text-muted' style={{ color: "white" }}>
             password must be at least 6 carachter long
           </Form.Text>
         </Form.Group>
@@ -93,16 +93,22 @@ const Login = ({ history }) => {
     </div>
   );
 
-  const spinner = (
-    <div className='center'>
-      <Container>
-        <Spinner animation='border' className='lg' />
-      </Container>
-    </div>
-  );
+  // const spinner = (
+  //   <div className='center'>
+  //     <Container>
+  //       <Spinner animation='border' className='lg' />
+  //     </Container>
+  //   </div>
+  // );
 
   return (
-    <>{authReducer.isAuthenticated ? <Redirect to='/profile' /> : component}</>
+    <>
+      {authReducer.isAuthenticated ? (
+        <Redirect to='/profile' />
+      ) : (
+        <div className='register-alright'> {component}</div>
+      )}
+    </>
   );
 };
 
