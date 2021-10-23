@@ -1,0 +1,71 @@
+$main-font: 'Press Start 2P', cursive;
+$primary-color: #00008b;
+
+@mixin easeOut() {
+  transition: 0.3 ease-out;
+}
+
+body {
+  background-color: $primary-color;
+  color: white;
+  font-family: $main-font;
+  min-height: 55vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.container {
+  height: 100%;
+  margin: 25rem auto;
+  max-width: 100rem;
+  text-align: center;
+  justify-content: center;
+
+  h1,
+  button {
+    margin-bottom: 2rem;
+  }
+
+  button {
+    padding: 1rem;
+    font-weight: 400;
+    font-size: larger;
+    color: $primary-color;
+    width: 150px;
+    border: none;
+    border-radius: 5px;
+  }
+
+  button:hover {
+    cursor: pointer;
+    color: white;
+    background-color: #3838ce;
+    @include easeOut;
+  }
+
+  img {
+    width: 100px;
+    height: 100px;
+    position: absolute;
+    opacity: 0;
+    // left: 0px;
+    cursor: pointer;
+  }
+
+  .score {
+    transform: translateY(1000px);
+    opacity: 0;
+    transition: 1s ease-in;
+    margin: 0 auto;
+  }
+
+  .appear {
+    transform: translateY(0px);
+    opacity: 1;
+  }
+
+  .disappear {
+    opacity: 0;
+    display: none;
+  }
+}
